@@ -1,3 +1,4 @@
+import 'package:assesment_elt/config/app_router.dart';
 import 'package:assesment_elt/core/util/responsive_helper.dart';
 import 'package:assesment_elt/features/books/widgets/rating_bottomsheet.dart';
 import 'package:assesment_elt/features/books/widgets/star_rating.dart';
@@ -47,7 +48,9 @@ class BookDetailScreen extends StatelessWidget {
         leading: IconButton(
           icon:
               const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black),
-          onPressed: () {},
+          onPressed: () {
+            AppRouter().goToLanding(context);
+          },
         ),
       ),
       body: Column(

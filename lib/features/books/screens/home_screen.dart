@@ -1,3 +1,4 @@
+import 'package:assesment_elt/config/app_router.dart';
 import 'package:assesment_elt/core/util/responsive_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,85 +51,90 @@ class HomeScreen extends StatelessWidget {
 
                 return Stack(
                   children: [
-                    Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          // Responsive green container for the "image" placeholder
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              // color: Colors.green,
-                              margin: EdgeInsets.all(w / 60),
-                              child: Center(
-                                child: Container(
-                                  width: w / 3,
-                                  height: h / 4,
-                                  color: Colors.blueAccent, // Book cover color
+                    GestureDetector(
+                      onTap: () {
+                        AppRouter().goToBookDetail(context);
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                // color: Colors.green,
+                                margin: EdgeInsets.all(w / 60),
+                                child: Center(
+                                  child: Container(
+                                    width: w / 3,
+                                    height: h / 4,
+                                    color:
+                                        Colors.blueAccent, // Book cover color
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          // Responsive yellow container for book details
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              // color: Colors.yellow,
-                              padding: EdgeInsets.all(w / 40),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Book title
-                                  Text(
-                                    "Book Title",
-                                    style: TextStyle(
-                                      fontSize: w / 27,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-
-                                  // Author name
-                                  Text(
-                                    "Author Name",
-                                    style: TextStyle(
-                                      fontSize: w / 32,
-                                      color: Colors.grey,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-
-                                  // Rating
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
-                                        size: w / 32,
+                            // Responsive yellow container for book details
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                // color: Colors.yellow,
+                                padding: EdgeInsets.all(w / 40),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Book title
+                                    Text(
+                                      "Book Title",
+                                      style: TextStyle(
+                                        fontSize: w / 27,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      SizedBox(width: w / 100),
-                                      Text(
-                                        "4.5",
-                                        style: TextStyle(fontSize: w / 32),
-                                      ),
-                                    ],
-                                  ),
-
-                                  // Price
-                                  Text(
-                                    "\$15.99",
-                                    style: TextStyle(
-                                      fontSize: w / 27,
-                                      fontWeight: FontWeight.bold,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ),
-                                ],
+
+                                    // Author name
+                                    Text(
+                                      "Author Name",
+                                      style: TextStyle(
+                                        fontSize: w / 32,
+                                        color: Colors.grey,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+
+                                    // Rating
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                          size: w / 32,
+                                        ),
+                                        SizedBox(width: w / 100),
+                                        Text(
+                                          "4.5",
+                                          style: TextStyle(fontSize: w / 32),
+                                        ),
+                                      ],
+                                    ),
+
+                                    // Price
+                                    Text(
+                                      "\$15.99",
+                                      style: TextStyle(
+                                        fontSize: w / 27,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     // Vertical separator (middle line)

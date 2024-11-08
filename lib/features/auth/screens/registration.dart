@@ -1,3 +1,4 @@
+import 'package:assesment_elt/config/app_router.dart';
 import 'package:assesment_elt/core/constants/app_assets.dart';
 import 'package:assesment_elt/core/util/custom_spacer.dart';
 import 'package:flutter/material.dart';
@@ -201,7 +202,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Handle registration logic here
+                          AppRouter().goToLanding(context);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange,
