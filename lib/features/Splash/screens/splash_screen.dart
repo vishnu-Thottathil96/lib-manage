@@ -28,7 +28,7 @@ class SplashScreenState extends State<SplashScreen> {
     double w = ResponsiveHelper.getWidth(context);
     double h = ResponsiveHelper.getHeight(context);
     return Scaffold(
-        backgroundColor: AppColors.splashScreedBg,
+        backgroundColor: AppColors.primaryOrange,
         body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
