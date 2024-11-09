@@ -1,16 +1,17 @@
 import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:assesment_elt/core/services/author_service.dart';
+import 'package:assesment_elt/core/models/author.dart';
 import 'package:assesment_elt/core/constants/app_colors.dart';
 import 'package:assesment_elt/core/constants/app_strings.dart';
 import 'package:assesment_elt/core/util/responsive_helper.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart'; // Import shimmer package
 
 class AuthorsScreen extends StatelessWidget {
   const AuthorsScreen({super.key});
 
-  // Static description text for all authors
   static const String descriptionText =
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum';
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
   @override
   Widget build(BuildContext context) {
@@ -18,27 +19,94 @@ class AuthorsScreen extends StatelessWidget {
     double h = ResponsiveHelper.getHeight(context);
 
     return SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: h / 60),
-          _buildTitle(w),
-          SizedBox(height: h / 60),
-          Expanded(
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                String authorName = "Author $index";
-                return _buildAuthorTile(authorName, w, h);
-              },
-            ),
-          ),
-        ],
+      child: FutureBuilder<List<AuthorModel>>(
+        future: AuthorService().fetchAuthors(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show shimmer effect while loading
+            return _buildShimmer(w, h);
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            final authors = snapshot.data!;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: h / 60),
+                _buildTitle(w),
+                SizedBox(height: h / 60),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: authors.length,
+                    itemBuilder: (context, index) {
+                      return _buildAuthorTile(authors[index], w, h);
+                    },
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return const Center(child: Text('No authors available'));
+          }
+        },
       ),
     );
   }
 
-  // Builds the "Authors" title at the top
+  Widget _buildShimmer(double w, double h) {
+    // Return a shimmer effect for the loading state
+    return ListView.builder(
+      itemCount: 10, // Simulate 10 loading authors
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: h / 100, horizontal: w / 30),
+          child: Shimmer.fromColors(
+            baseColor: AppColors.liteGrey,
+            highlightColor: AppColors.textGrey,
+            child: Container(
+              height: h / 8,
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: w / 8,
+                    height: w / 8,
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  SizedBox(width: w / 30),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: w / 2,
+                          height: h / 20,
+                          color: AppColors.white,
+                        ),
+                        SizedBox(height: h / 60),
+                        Container(
+                          width: w / 2,
+                          height: h / 30,
+                          color: AppColors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildTitle(double w) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: w / 30),
@@ -52,8 +120,7 @@ class AuthorsScreen extends StatelessWidget {
     );
   }
 
-  // Builds a tile for each author with a colored circle and description
-  Widget _buildAuthorTile(String authorName, double w, double h) {
+  Widget _buildAuthorTile(AuthorModel author, double w, double h) {
     Color randomColor = generateRandomColor();
     Color darkShadeColor = getDarkerShade(randomColor);
 
@@ -67,16 +134,15 @@ class AuthorsScreen extends StatelessWidget {
         padding: EdgeInsets.all(w / 40),
         child: Row(
           children: [
-            _buildAuthorCircle(authorName, randomColor, darkShadeColor, w),
+            _buildAuthorCircle(author.name, randomColor, darkShadeColor, w),
             SizedBox(width: w / 30),
-            _buildAuthorDetails(authorName, descriptionText, w),
+            _buildAuthorDetails(author, w),
           ],
         ),
       ),
     );
   }
 
-  // Builds the circular avatar with the author's initial
   Widget _buildAuthorCircle(
       String authorName, Color bgColor, Color textColor, double w) {
     return Container(
@@ -99,14 +165,13 @@ class AuthorsScreen extends StatelessWidget {
     );
   }
 
-  // Builds the column with the author's name and description
-  Widget _buildAuthorDetails(String authorName, String description, double w) {
+  Widget _buildAuthorDetails(AuthorModel author, double w) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            authorName,
+            author.name,
             style: TextStyle(
               fontSize: w / 20,
               fontWeight: FontWeight.bold,
@@ -115,7 +180,7 @@ class AuthorsScreen extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           Text(
-            description,
+            author.biography,
             style: TextStyle(
               fontSize: w / 30,
               color: AppColors.textGrey,
@@ -129,7 +194,6 @@ class AuthorsScreen extends StatelessWidget {
   }
 }
 
-// Generates a random color with a fixed opacity
 Color generateRandomColor() {
   Random random = Random();
   return Color.fromRGBO(
@@ -140,7 +204,6 @@ Color generateRandomColor() {
   );
 }
 
-// Returns a darker shade of the given color
 Color getDarkerShade(Color color) {
   int red = (color.red * 0.5).toInt();
   int green = (color.green * 0.5).toInt();

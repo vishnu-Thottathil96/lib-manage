@@ -7,4 +7,5 @@ class AppColors {
   static Color liteGrey = Colors.grey[350]!;
   static Color white = Colors.white;
   static Color golden = Colors.amber;
+  static Color bookBg = HexColor('#FFE0E0');
 }
