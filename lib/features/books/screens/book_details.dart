@@ -231,32 +231,43 @@ class BookInfoSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                maxLines: 1,
-                style: TextStyle(
-                  fontSize: fontSize + 5,
-                  fontWeight: FontWeight.bold,
+              // Wrap the title text in a Flexible widget
+              Flexible(
+                child: Text(
+                  title,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: fontSize + 5,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: padding / 2, vertical: padding / 4),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.liteGrey),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.star, color: AppColors.golden, size: fontSize),
-                    SizedBox(width: padding / 4),
-                    Text(
-                      rating,
-                      style: TextStyle(color: Colors.black, fontSize: fontSize),
-                    ),
-                  ],
+              SizedBox(width: padding), // Add a gap between the two widgets
+
+              // Wrap the rating container in a Flexible widget to avoid overflow
+              Flexible(
+                flex:
+                    0, // Keeps the container at its intrinsic size but still flexible
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: padding / 2, vertical: padding / 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.liteGrey),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.star, color: AppColors.golden, size: fontSize),
+                      SizedBox(width: padding / 4),
+                      Text(
+                        rating,
+                        style:
+                            TextStyle(color: Colors.black, fontSize: fontSize),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
