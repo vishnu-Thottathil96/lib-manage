@@ -1,7 +1,4 @@
 import 'package:assesment_elt/config/app_router.dart';
-import 'package:assesment_elt/config/app_theme.dart';
-import 'package:assesment_elt/features/Splash/screens/splash_screen.dart';
-import 'package:assesment_elt/features/books/screens/book_details.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,11 +13,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: AppRouter().router,
       title: 'Flutter Demo',
-      theme: AppTheme.darkTheme,
-      // theme: ThemeData(
-      //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      //   useMaterial3: true,
-      // ),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
     );
   }
 }
