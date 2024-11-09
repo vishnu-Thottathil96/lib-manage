@@ -1,6 +1,4 @@
 import 'package:assesment_elt/config/app_router.dart';
-import 'package:assesment_elt/features/Splash/screens/splash_screen.dart';
-import 'package:assesment_elt/features/books/screens/book_details.dart';
 import 'package:flutter/material.dart';
 
 void main() {

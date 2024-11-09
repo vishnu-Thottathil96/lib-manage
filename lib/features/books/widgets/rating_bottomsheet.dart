@@ -1,3 +1,4 @@
+import 'package:assesment_elt/core/services/session_service.dart';
 import 'package:assesment_elt/core/util/responsive_helper.dart';
 import 'package:assesment_elt/features/books/widgets/star_rating.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,9 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  String userId = await UserSessionService.getUserId() ?? '';
+                  print(userId);
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(

@@ -1,11 +1,23 @@
+import 'package:assesment_elt/core/models/author.dart';
+import 'package:assesment_elt/core/models/book.dart';
+import 'package:assesment_elt/core/services/books_service.dart';
+import 'package:flutter/material.dart';
 import 'package:assesment_elt/core/constants/app_colors.dart';
 import 'package:assesment_elt/core/util/responsive_helper.dart';
 import 'package:assesment_elt/features/books/widgets/rating_bottomsheet.dart';
-import 'package:flutter/material.dart';
 import 'package:assesment_elt/config/app_router.dart';
 
 class BookDetailScreen extends StatelessWidget {
-  const BookDetailScreen({super.key});
+  final String bookId; // Pass the bookId to fetch the correct book details
+  final String starCount;
+  const BookDetailScreen({
+    super.key,
+    required this.bookId,
+    required this.starCount,
+  });
+  Future<Author> _fetchAuthorName(Book book) async {
+    return await BookService().fetchAuthorById(book.authorId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,21 +26,59 @@ class BookDetailScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon:
-              const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+          ),
           onPressed: () {
             AppRouter().goToLanding(context);
           },
         ),
       ),
-      body: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BookImageContainer(),
-          BookInfoSection(),
-          Expanded(child: BookDescriptionSection()),
-          BottomPriceRatingSection(),
-        ],
+      body: FutureBuilder<Book>(
+        future: BookService().fetchBookById(bookId),
+        builder: (context, bookSnapshot) {
+          if (bookSnapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (bookSnapshot.hasError) {
+            return Center(child: Text('Error: ${bookSnapshot.error}'));
+          } else if (bookSnapshot.hasData) {
+            final book = bookSnapshot.data!;
+            return FutureBuilder<Author>(
+              future: _fetchAuthorName(book),
+              builder: (context, authorSnapshot) {
+                if (authorSnapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (authorSnapshot.hasError) {
+                  return Center(child: Text('Error: ${authorSnapshot.error}'));
+                } else if (authorSnapshot.hasData) {
+                  final author = authorSnapshot.data!;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BookImageContainer(coverImageUrl: book.coverPictureURL),
+                      BookInfoSection(
+                        title: book.title,
+                        author: author.name, // Display author's name
+                        publishedDate:
+                            book.formattedPublishedDate, // Use formatted date,
+                        price: book.price,
+                        rating: starCount,
+                      ),
+                      Expanded(
+                          child: BookDescriptionSection(
+                              description: book.description)),
+                      BottomPriceRatingSection(price: book.price),
+                    ],
+                  );
+                } else {
+                  return const Center(child: Text('No author data available'));
+                }
+              },
+            );
+          } else {
+            return const Center(child: Text('No book data available'));
+          }
+        },
       ),
     );
   }
@@ -36,7 +86,9 @@ class BookDetailScreen extends StatelessWidget {
 
 //bottom section
 class BottomPriceRatingSection extends StatelessWidget {
-  const BottomPriceRatingSection({super.key});
+  final double price;
+
+  const BottomPriceRatingSection({super.key, required this.price});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +115,7 @@ class BottomPriceRatingSection extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "₹ 850.00",
+            "₹ $price",
             style: TextStyle(
               fontSize: fontSize + 6,
               fontWeight: FontWeight.bold,
@@ -106,7 +158,8 @@ class BottomPriceRatingSection extends StatelessWidget {
 
 //
 class BookDescriptionSection extends StatelessWidget {
-  const BookDescriptionSection({super.key});
+  final String description;
+  const BookDescriptionSection({super.key, required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -128,23 +181,8 @@ class BookDescriptionSection extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: padding),
       child: SingleChildScrollView(
         child: Text(
-          "It’s been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.been nearly 25 years since Robert Kiyosaki’s Rich Dad Poor Dad first made waves in the Personal Finance arena... "
-          "explains the difference between working for money and having your money work for you.",
-          style: TextStyle(
-              color: AppColors.textGrey, fontSize: fontSize, height: 1.5),
+          description,
+          style: TextStyle(fontSize: fontSize, height: 1.5),
         ),
       ),
     );
@@ -153,7 +191,20 @@ class BookDescriptionSection extends StatelessWidget {
 
 //
 class BookInfoSection extends StatelessWidget {
-  const BookInfoSection({super.key});
+  final String title;
+  final String author;
+  final String publishedDate;
+  final String rating;
+  final double price;
+
+  const BookInfoSection({
+    super.key,
+    required this.title,
+    required this.author,
+    required this.publishedDate,
+    required this.price,
+    required this.rating,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -180,42 +231,55 @@ class BookInfoSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Rich Dad Poor Dad",
-                style: TextStyle(
-                  fontSize: fontSize + 6,
-                  fontWeight: FontWeight.bold,
+              // Wrap the title text in a Flexible widget
+              Flexible(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: fontSize + 5,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: padding / 2, vertical: padding / 4),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.liteGrey),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.star, color: AppColors.golden, size: fontSize),
-                    SizedBox(width: padding / 4),
-                    Text(
-                      "4.0",
-                      style: TextStyle(color: Colors.black, fontSize: fontSize),
-                    ),
-                  ],
+              SizedBox(width: padding), // Add a gap between the two widgets
+
+              // Wrap the rating container in a Flexible widget to avoid overflow
+              Flexible(
+                flex:
+                    0, // Keeps the container at its intrinsic size but still flexible
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: padding / 2, vertical: padding / 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.liteGrey),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.star, color: AppColors.golden, size: fontSize),
+                      SizedBox(width: padding / 4),
+                      Text(
+                        rating,
+                        style:
+                            TextStyle(color: Colors.black, fontSize: fontSize),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
           SizedBox(height: padding / 2),
           Text(
-            "by Robert T. Kiyosaki",
-            style: TextStyle(color: Colors.black, fontSize: fontSize),
+            "by $author",
+            style: TextStyle(fontSize: fontSize),
           ),
           SizedBox(height: padding / 4),
           Text(
-            "Published date: April 11, 2017",
+            "Published date: $publishedDate",
             style: TextStyle(color: AppColors.textGrey, fontSize: fontSize),
           ),
           SizedBox(height: padding),
@@ -227,7 +291,9 @@ class BookInfoSection extends StatelessWidget {
 
 //
 class BookImageContainer extends StatelessWidget {
-  const BookImageContainer({super.key});
+  final String coverImageUrl;
+
+  const BookImageContainer({super.key, required this.coverImageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -240,7 +306,7 @@ class BookImageContainer extends StatelessWidget {
 
     return Container(
       height: containerHeight,
-      color: Colors.pink[100],
+      color: AppColors.bookBg,
       width: double.infinity,
       child: Center(
         child: Padding(
@@ -248,7 +314,12 @@ class BookImageContainer extends StatelessWidget {
           child: Container(
             height: containerHeight,
             width: containerHeight * 0.7,
-            color: Colors.purpleAccent,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(coverImageUrl),
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
         ),
       ),
