@@ -3,20 +3,23 @@ import 'package:assesment_elt/core/constants/app_colors.dart';
 import 'package:assesment_elt/core/constants/app_strings.dart';
 import 'package:assesment_elt/core/models/author.dart';
 import 'package:assesment_elt/core/models/book.dart';
+import 'package:assesment_elt/core/providers/theme_provider.dart';
 import 'package:assesment_elt/core/services/books_service.dart';
 import 'package:assesment_elt/core/services/session_service.dart';
 import 'package:assesment_elt/core/util/responsive_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 
 // Assume Book and Author models and BookService are defined elsewhere.
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeProvider); // get current theme
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
@@ -34,41 +37,55 @@ class HomeScreen extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                IconButton(
-                  onPressed: () async {
-                    // Show a confirmation dialog before logging out
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Confirm Logout"),
-                          content:
-                              const Text("Are you sure you want to log out?"),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(
-                                    context); // Close dialog without logout
-                              },
-                              child: const Text("Cancel"),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                await UserSessionService
-                                    .clearUserSession(); // Clear session
-                                AppRouter().goToRegister(
-                                    context); // Navigate to landing page
-                                Navigator.pop(
-                                    context); // Confirm logout and close dialog
-                              },
-                              child: const Text("Logout"),
-                            ),
-                          ],
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () async {
+                        // Show a confirmation dialog before logging out
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Confirm Logout"),
+                              content: const Text(
+                                  "Are you sure you want to log out?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(
+                                        context); // Close dialog without logout
+                                  },
+                                  child: const Text("Cancel"),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    await UserSessionService
+                                        .clearUserSession(); // Clear session
+                                    AppRouter().goToRegister(
+                                        context); // Navigate to landing page
+                                    Navigator.pop(
+                                        context); // Confirm logout and close dialog
+                                  },
+                                  child: const Text("Logout"),
+                                ),
+                              ],
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                  icon: const Icon(Icons.logout),
+                      icon: const Icon(Icons.logout),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          // Toggle theme when pressed
+                          ref.read(themeProvider.notifier).toggleTheme();
+                        },
+                        icon: Icon(
+                          themeMode == ThemeMode.light
+                              ? Icons.nightlight_round
+                              : Icons.sunny,
+                        ))
+                  ],
                 ),
               ],
             ),
