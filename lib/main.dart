@@ -25,6 +25,7 @@ class MyApp extends ConsumerWidget {
       ),
       darkTheme: ThemeData.dark(), // You can customize the dark theme here
       themeMode: themeMode, // Dynamically change theme using the provider
+      debugShowCheckedModeBanner: false, // Disable the debug banner
     );
   }
 }

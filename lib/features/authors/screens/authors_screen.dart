@@ -10,9 +10,6 @@ import 'package:shimmer/shimmer.dart'; // Import shimmer package
 class AuthorsScreen extends StatelessWidget {
   const AuthorsScreen({super.key});
 
-  static const String descriptionText =
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-
   @override
   Widget build(BuildContext context) {
     double w = ResponsiveHelper.getWidth(context);
