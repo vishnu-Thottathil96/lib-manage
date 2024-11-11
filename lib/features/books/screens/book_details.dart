@@ -68,7 +68,10 @@ class BookDetailScreen extends StatelessWidget {
                       Expanded(
                           child: BookDescriptionSection(
                               description: book.description)),
-                      BottomPriceRatingSection(price: book.price),
+                      BottomPriceRatingSection(
+                        price: book.price,
+                        bookId: book.id,
+                      ),
                     ],
                   );
                 } else {

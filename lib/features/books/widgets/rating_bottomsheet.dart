@@ -1,17 +1,24 @@
+import 'dart:developer';
+
+import 'package:assesment_elt/core/constants/app_colors.dart';
+import 'package:assesment_elt/core/services/rating_service.dart';
 import 'package:assesment_elt/core/services/session_service.dart';
+import 'package:assesment_elt/core/services/user_data.dart';
 import 'package:assesment_elt/core/util/responsive_helper.dart';
 import 'package:assesment_elt/features/books/widgets/star_rating.dart';
 import 'package:flutter/material.dart';
 
 class RatingBottomSheet extends StatefulWidget {
-  const RatingBottomSheet({super.key});
+  final String bookId;
+  const RatingBottomSheet({super.key, required this.bookId});
 
   @override
   _RatingBottomSheetState createState() => _RatingBottomSheetState();
 }
 
 class _RatingBottomSheetState extends State<RatingBottomSheet> {
-  double rating = 0.0;
+  int rating = 0;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +32,7 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
             width: 50,
             height: 5,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: AppColors.textGrey,
               borderRadius: BorderRadius.circular(2.5),
             ),
           ),
@@ -33,7 +40,7 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
           Text(
             "Add rating",
             style: TextStyle(
-              fontSize: ResponsiveHelper.getTextSize(context, scale: 0.05),
+              fontSize: ResponsiveHelper.getTextSize(context, scale: 0.04),
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -53,24 +60,74 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () async {
-                  String userId = await UserSessionService.getUserId() ?? '';
-                  print(userId);
-                  Navigator.pop(context);
-                },
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        setState(() {
+                          isLoading = true; // Start loading
+                        });
+                        String jwtToken =
+                            await SecureStorageService.getAccessToken() ?? '';
+
+                        if (jwtToken.isNotEmpty) {
+                          final result = await RatingService.addRating(
+                            bookId: widget.bookId,
+                            rating: rating,
+                            jwtToken: jwtToken,
+                          );
+
+                          if (result['statusCode'] == 200) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Rating added successfully!"),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("${result['message']}"),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+
+                          Navigator.pop(
+                              context); // Go back after showing the snackbar
+                        } else {
+                          log("JWT token is missing.");
+
+                          // Show a snackbar if the token is missing
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content:
+                                  Text("Session expired. Please log in again."),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                        setState(() {
+                          isLoading = false; // Stop loading
+                        });
+                      },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
+                  backgroundColor: AppColors.primaryOrange,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Text(
-                  "Submit",
-                  style: TextStyle(
-                    fontSize:
-                        ResponsiveHelper.getTextSize(context, scale: 0.04),
-                  ),
-                ),
+                child: isLoading
+                    ? const CircularProgressIndicator(
+                        color: Colors.white,
+                      )
+                    : Text(
+                        "Submit",
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: ResponsiveHelper.getTextSize(context,
+                              scale: 0.04),
+                        ),
+                      ),
               ),
             ),
           ),

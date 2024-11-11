@@ -127,7 +127,7 @@ class RegistrationForm extends StatelessWidget {
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  'Already registered user will be signed up insed of registration',
+                  'Already registered user will be login insed of registration',
                   style: TextStyle(color: AppColors.textGrey, fontSize: 14),
                 ),
               ),

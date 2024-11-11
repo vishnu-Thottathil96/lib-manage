@@ -2,11 +2,11 @@ import 'package:assesment_elt/core/util/responsive_helper.dart';
 import 'package:flutter/material.dart';
 
 class StarRating extends StatelessWidget {
-  final double rating;
+  final int rating;
   final double width;
   final double size;
   final Color color;
-  final ValueChanged<double> onRatingChanged;
+  final ValueChanged<int> onRatingChanged;
 
   const StarRating({
     super.key,
@@ -21,7 +21,7 @@ class StarRating extends StatelessWidget {
   Widget build(BuildContext context) {
     double starSize = ResponsiveHelper.getResponsiveValue(
       context: context,
-      phone: width / 15,
+      phone: width / 10,
       tablet: width / 13,
       desktop: width / 10,
     );
@@ -30,7 +30,7 @@ class StarRating extends StatelessWidget {
       children: List.generate(5, (index) {
         return GestureDetector(
           onTap: () {
-            onRatingChanged(index + 1.0);
+            onRatingChanged(index + 1);
           },
           child: Icon(
             index < rating ? Icons.star : Icons.star_border,

@@ -1,3 +1,4 @@
+import 'package:assesment_elt/config/currency_config.dart';
 import 'package:assesment_elt/core/constants/app_colors.dart';
 import 'package:assesment_elt/core/util/responsive_helper.dart';
 import 'package:assesment_elt/features/books/widgets/rating_bottomsheet.dart';
@@ -5,8 +6,10 @@ import 'package:flutter/material.dart';
 
 class BottomPriceRatingSection extends StatelessWidget {
   final double price;
+  final String bookId;
 
-  const BottomPriceRatingSection({super.key, required this.price});
+  const BottomPriceRatingSection(
+      {super.key, required this.price, required this.bookId});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,7 @@ class BottomPriceRatingSection extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "₹ $price",
+            "${CurrencyConfig.currencySymbol} $price",
             style: TextStyle(
               fontSize: fontSize + 6,
               fontWeight: FontWeight.bold,
@@ -41,7 +44,7 @@ class BottomPriceRatingSection extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              showRatingPopup(context);
+              showRatingPopup(context, bookId);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryOrange,
@@ -61,14 +64,16 @@ class BottomPriceRatingSection extends StatelessWidget {
     );
   }
 
-  void showRatingPopup(BuildContext context) {
+  void showRatingPopup(BuildContext context, String id) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        return const RatingBottomSheet();
+        return RatingBottomSheet(
+          bookId: id,
+        );
       },
     );
   }

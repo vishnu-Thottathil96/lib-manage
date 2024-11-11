@@ -1,4 +1,5 @@
 import 'package:assesment_elt/config/app_router.dart';
+import 'package:assesment_elt/config/currency_config.dart';
 import 'package:assesment_elt/core/constants/app_colors.dart';
 import 'package:assesment_elt/core/constants/app_strings.dart';
 import 'package:assesment_elt/core/models/author.dart';
@@ -427,7 +428,7 @@ class BookDetails extends StatelessWidget {
               ],
             ),
             Text(
-              "\$ ${book.price}",
+              "${CurrencyConfig.currencySymbol} ${book.price}",
               style: TextStyle(
                 fontSize: width / 27,
                 fontWeight: FontWeight.bold,
